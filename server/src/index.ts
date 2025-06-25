@@ -71,3 +71,22 @@ app.delete("/opportunities/:id", (req, res) => {
     res.status(404).json({ error: "Opportunity not found" });
   }
 });
+
+
+app.put("/opportunities/:id", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const index = opportunities.findIndex((opp) => opp.id === id);
+
+  if (index !== -1) {
+    const originalOpportunity = opportunities[index];
+    const updatedOpportunity = {
+      ...originalOpportunity, 
+      ...req.body, 
+      id: originalOpportunity.id, 
+    };
+    opportunities[index] = updatedOpportunity;
+    res.json(updatedOpportunity);
+  } else {
+    res.status(404).json({ error: "Opportunity not found" });
+  }
+});
