@@ -5,9 +5,10 @@ interface HomePageProps {
   opportunities: VolunteerOpportunity[];
   search: string;
   setSearch: (search: string) => void;
+  onDelete: (id: number) => void; 
 }
 
-function HomePage({ opportunities, search, setSearch }: HomePageProps) {
+function HomePage({ opportunities, search, setSearch, onDelete }: HomePageProps) {
   const filtered = opportunities.filter((opp) =>
     opp.title.toLowerCase().includes(search.toLowerCase()) ||
     opp.description.toLowerCase().includes(search.toLowerCase())
@@ -16,7 +17,7 @@ function HomePage({ opportunities, search, setSearch }: HomePageProps) {
   return (
     <div>
       <h1>Volunteer Opportunities</h1>
-      <Link to="/add">Add New Opportunity</Link>
+      <Link to="/add" style={{ display: 'inline-block', margin: '10px 0' }}>Add New Opportunity</Link>
       <hr />
       <input
         type="text"
@@ -27,13 +28,20 @@ function HomePage({ opportunities, search, setSearch }: HomePageProps) {
       />
       <ul>
         {filtered.map((opp) => (
-          <li key={opp.id}>
-            {/* Link each item to its details page */}
+          <li key={opp.id} style={{ marginBottom: '10px' }}>
             <Link to={`/opportunities/${opp.id}`}>
               <strong>{opp.title}</strong> – {opp.location} ({opp.date})
             </Link>
+            {/* delete button later*/}
+            <button 
+              onClick={() => onDelete(opp.id)} 
+              style={{ marginLeft: '10px', cursor: 'pointer' }}
+            >
+              Delete
+            </button>
           </li>
         ))}
+        {filtered.length === 0 && <p>No opportunities found.</p>}
       </ul>
     </div>
   );
