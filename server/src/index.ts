@@ -59,3 +59,15 @@ app.post("/opportunities", (req, res) => {
   opportunities.push(newOpportunity);
   res.status(201).json(newOpportunity);
 });
+
+app.delete("/opportunities/:id", (req, res) => {
+  const id = parseInt(req.params.id, 10);
+  const index = opportunities.findIndex((opp) => opp.id === id);
+
+  if (index !== -1) {
+    opportunities.splice(index, 1);
+    res.status(204).send(); 
+  } else {
+    res.status(404).json({ error: "Opportunity not found" });
+  }
+});
