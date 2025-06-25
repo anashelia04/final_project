@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+app.use(express.json()); 
 import { opportunities } from "./data";
 
 const app = express();
@@ -25,4 +26,14 @@ app.get("/opportunities/:id", (req, res) => {
   } else {
     res.status(404).json({ error: "Opportunity not found" });
   }
+});
+
+
+app.post("/opportunities", (req, res) => {
+  const newOpportunity = {
+    id: Date.now(), 
+    ...req.body,
+  };
+  opportunities.push(newOpportunity);
+  res.status(201).json(newOpportunity);
 });
