@@ -37,3 +37,25 @@ app.post("/opportunities", (req, res) => {
   opportunities.push(newOpportunity);
   res.status(201).json(newOpportunity);
 });
+
+app.post("/opportunities", (req, res) => {
+  const { title, description, date, location, category } = req.body;
+
+  if (!title || !description || !date || !location) {
+    return res.status(400).json({ 
+      error: "Missing required fields. Required: title, description, date, location." 
+    });
+  }
+
+  const newOpportunity = {
+    id: Date.now(),
+    title,
+    description,
+    date,
+    location,
+    category: category || "General", 
+  };
+
+  opportunities.push(newOpportunity);
+  res.status(201).json(newOpportunity);
+});
