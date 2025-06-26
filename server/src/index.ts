@@ -1,90 +1,21 @@
 import express from "express";
 import cors from "cors";
-app.use(express.json()); 
-import { opportunities } from "./data";
+import opportunityRoutes from './routes/opportunityRoutes'; 
+import { errorHandler } from './middleware/errorHandler'; 
 
 const app = express();
 const PORT = 3000;
 
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-app.get("/opportunities", (_req, res) => {
-  res.json(opportunities);
-});
+// Routes 
+app.use('/opportunities', opportunityRoutes);
+
+// Global Error Handler 
+app.use(errorHandler);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
-});
-
-app.get("/opportunities/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const opportunity = opportunities.find((opp) => opp.id === id);
-
-  if (opportunity) {
-    res.json(opportunity);
-  } else {
-    res.status(404).json({ error: "Opportunity not found" });
-  }
-});
-
-// POST a new opportunity 
-app.post("/opportunities", (req, res) => {
-  const { title, description, date, location, category } = req.body;
-
-  if (!title || !description || !date || !location) {
-    return res.status(400).json({ 
-      error: "Missing required fields. Required: title, description, date, location." 
-    });
-  }
-
-  const newOpportunity = {
-    id: Date.now(),
-    title,
-    description,
-    date,
-    location,
-    category: category || "General",
-  };
-
-  opportunities.push(newOpportunity);
-  res.status(201).json(newOpportunity);
-});
-
-// Replaced PUT (update) an opportunity by ID 
-// Now - PUT (update) an opportunity by ID (with validation)
-app.put("/opportunities/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  
-  if (Object.keys(req.body).length === 0) {
-    return res.status(400).json({ error: "Request body cannot be empty." });
-  }
-
-  const index = opportunities.findIndex((opp) => opp.id === id);
-
-  if (index !== -1) {
-    const originalOpportunity = opportunities[index];
-    const updatedOpportunity = {
-      ...originalOpportunity,
-      ...req.body,
-      id: originalOpportunity.id, 
-    };
-    opportunities[index] = updatedOpportunity;
-    res.json(updatedOpportunity);
-  } else {
-    res.status(404).json({ error: "Opportunity not found" });
-  }
-});
-
-
-// DELETE an opportunity by ID 
-app.delete("/opportunities/:id", (req, res) => {
-  const id = parseInt(req.params.id, 10);
-  const index = opportunities.findIndex((opp) => opp.id === id);
-
-  if (index !== -1) {
-    opportunities.splice(index, 1);
-    res.status(204).send();
-  } else {
-    res.status(404).json({ error: "Opportunity not found" });
-  }
 });
