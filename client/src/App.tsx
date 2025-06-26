@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
-import { VolunteerOpportunity } from "./types/VolunteerOpportunity";
+import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
 
 // Import the page components
 import HomePage from "./pages/HomePage";

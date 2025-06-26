@@ -1,5 +1,5 @@
 import { opportunities as initialData } from '../data';
-import { VolunteerOpportunity } from '../types/VolunteerOpportunity'; 
+import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
 
 let opportunities: VolunteerOpportunity[] = [...initialData];
 

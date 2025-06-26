@@ -1,7 +1,7 @@
 // client/src/pages/HomePage.tsx
 
 import { Link } from 'react-router-dom';
-import { VolunteerOpportunity } from '../types/VolunteerOpportunity';
+import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
 
 // Define the props that this component receives from its parent (App.tsx)
 interface HomePageProps {

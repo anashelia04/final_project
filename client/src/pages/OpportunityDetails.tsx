@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { VolunteerOpportunity } from '../types/VolunteerOpportunity';
+import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
 
 function OpportunityDetails() {
   const { id } = useParams<{ id: string }>(); // Get the ID from the URL

@@ -1,4 +1,4 @@
-import { VolunteerOpportunity } from "./types/VolunteerOpportunity";
+import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
 
 export const opportunities: VolunteerOpportunity[] = [
   {
