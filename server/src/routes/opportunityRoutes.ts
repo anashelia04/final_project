@@ -1,5 +1,3 @@
-// server/src/routes/opportunityRoutes.ts
-
 import express from 'express';
 import * as OpportunityService from '../services/opportunityService';
 
@@ -30,10 +28,14 @@ router.get("/", (req, res) => {
  */
 router.get("/:id", (req, res) => {
   const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid ID format. ID must be a number." });
+  }
   const opportunity = OpportunityService.getOpportunityById(id);
   if (opportunity) res.json(opportunity);
   else res.status(404).json({ error: "Opportunity not found" });
 });
+
 
 /**
  * @description Create a new volunteer opportunity.
@@ -44,9 +46,10 @@ router.get("/:id", (req, res) => {
  */
 router.post("/", (req, res) => {
   const { title, description, date, location, category } = req.body;
-  if (!title || !description || !date || !location) {
-    return res.status(400).json({ error: "Missing required fields." });
+  if (!title || !title.trim() || !description || !description.trim() || !date || !location || !location.trim()) {
+    return res.status(400).json({ error: "Missing or empty required fields. Required: title, description, date, location." });
   }
+
   const newOpportunity = OpportunityService.createOpportunity({ title, description, date, location, category: category || "General" });
   res.status(201).json(newOpportunity);
 });
@@ -62,6 +65,10 @@ router.post("/", (req, res) => {
  */
 router.put("/:id", (req, res) => {
   const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid ID format. ID must be a number." });
+  }
+
   if (Object.keys(req.body).length === 0) {
     return res.status(400).json({ error: "Request body cannot be empty." });
   }
@@ -79,9 +86,14 @@ router.put("/:id", (req, res) => {
  */
 router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id, 10);
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "Invalid ID format. ID must be a number." });
+  }
+  
   const success = OpportunityService.deleteOpportunity(id);
   if (success) res.status(204).send();
   else res.status(404).json({ error: "Opportunity not found" });
 });
+  
 
 export default router;

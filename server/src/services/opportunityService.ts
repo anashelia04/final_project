@@ -11,13 +11,13 @@ interface OpportunityFilters {
 export const getAllOpportunities = (filters: OpportunityFilters = {}): VolunteerOpportunity[] => {
   let filteredOpportunities = [...opportunities]; 
 
-  if (filters.category) {
+  if (filters.category && filters.category.trim() !== '') {
     filteredOpportunities = filteredOpportunities.filter(
       opp => opp.category.toLowerCase() === filters.category?.toLowerCase()
     );
   }
 
-  if (filters.search) {
+  if (filters.search && filters.search.trim() !== '') {
     const searchTerm = filters.search.toLowerCase();
     filteredOpportunities = filteredOpportunities.filter(
       opp => opp.title.toLowerCase().includes(searchTerm) || 
