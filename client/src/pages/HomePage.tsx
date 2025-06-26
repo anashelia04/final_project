@@ -1,50 +1,51 @@
-// client/src/pages/HomePage.tsx
+// client/src/pages/HomePage.tsx (Final Version)
 
-import { Link } from 'react-router-dom';
 import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
+import OpportunityList from '../components/OpportunityList';
 
-// Define the props that this component receives from its parent (App.tsx)
+// A hardcoded list of categories for the filter dropdown
+const CATEGORIES = ["Environment", "Education", "Health", "Community", "Animals"];
+
 interface HomePageProps {
-  opportunities: VolunteerOpportunity[];
   search: string;
   setSearch: (search: string) => void;
-  onDelete: (id: number) => void; // The delete handler function
+  category: string;
+  setCategory: (category: string) => void;
+  opportunities: VolunteerOpportunity[];
+  loading: boolean;
+  onDelete: (id: number) => void;
 }
 
-function HomePage({ opportunities, search, setSearch, onDelete }: HomePageProps) {
-  
-  // Filter the list based on the search input
-  const filtered = opportunities.filter((opp) =>
-    opp.title.toLowerCase().includes(search.toLowerCase()) ||
-    opp.description.toLowerCase().includes(search.toLowerCase())
-  );
-
-   return (
+function HomePage({ search, setSearch, category, setCategory, opportunities, loading, onDelete }: HomePageProps) {
+  return (
     <div>
-      <h1>Volunteer Opportunities</h1>
-      <Link to="/add" className="btn btn-primary"> {/* Add classes */}
-        Add New Opportunity
-      </Link>
-      <hr style={{ margin: '1.5rem 0' }} />
-      <input
-        className="search-input" // Add class
-        type="text"
-        placeholder="Search..."
-        // ... other props
-      />
-      <ul>
-        {filtered.map((opp) => (
-          <li key={opp.id} className="opportunity-list-item"> {/* Add class */}
-            <Link to={`/opportunities/${opp.id}`}>
-              <strong>{opp.title}</strong> – {opp.location} ({opp.date})
-            </Link>
-            <button onClick={() => onDelete(opp.id)} className="btn btn-danger"> {/* Add classes */}
-              Delete
-            </button>
-          </li>
-        ))}
-      </ul>
-      {/* ... no results message */}
+      <h1>Find Your Opportunity</h1>
+      <div className="filters-container">
+        <input
+          type="text"
+          placeholder="Search by keyword..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="search-input"
+        />
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className="category-select"
+        >
+          <option value="">All Categories</option>
+          {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+        </select>
+      </div>
+
+      <hr />
+      
+      {}
+      {loading ? (
+        <p>Loading opportunities...</p>
+      ) : (
+        <OpportunityList opportunities={opportunities} onDelete={onDelete} />
+      )}
     </div>
   );
 }
