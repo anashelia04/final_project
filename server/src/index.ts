@@ -50,9 +50,15 @@ app.post("/opportunities", (req, res) => {
   res.status(201).json(newOpportunity);
 });
 
-// PUT (update) an opportunity by ID 
+// Replaced PUT (update) an opportunity by ID 
+// Now - PUT (update) an opportunity by ID (with validation)
 app.put("/opportunities/:id", (req, res) => {
   const id = parseInt(req.params.id, 10);
+  
+  if (Object.keys(req.body).length === 0) {
+    return res.status(400).json({ error: "Request body cannot be empty." });
+  }
+
   const index = opportunities.findIndex((opp) => opp.id === id);
 
   if (index !== -1) {
@@ -60,7 +66,7 @@ app.put("/opportunities/:id", (req, res) => {
     const updatedOpportunity = {
       ...originalOpportunity,
       ...req.body,
-      id: originalOpportunity.id,
+      id: originalOpportunity.id, 
     };
     opportunities[index] = updatedOpportunity;
     res.json(updatedOpportunity);
@@ -68,6 +74,7 @@ app.put("/opportunities/:id", (req, res) => {
     res.status(404).json({ error: "Opportunity not found" });
   }
 });
+
 
 // DELETE an opportunity by ID 
 app.delete("/opportunities/:id", (req, res) => {

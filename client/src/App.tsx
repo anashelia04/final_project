@@ -1,7 +1,10 @@
+// client/src/App.tsx
+
 import { useState, useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
 import { VolunteerOpportunity } from "./types/VolunteerOpportunity";
 
+// Import the page components
 import HomePage from "./pages/HomePage";
 import OpportunityDetails from "./pages/OpportunityDetails";
 import AddOpportunity from "./pages/AddOpportunity";
@@ -9,19 +12,31 @@ import AddOpportunity from "./pages/AddOpportunity";
 function App() {
   const [opportunities, setOpportunities] = useState<VolunteerOpportunity[]>([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true); // Add a loading state
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch all opportunities when the app component mounts
   useEffect(() => {
     fetch("http://localhost:3000/opportunities")
-      .then((res) => res.json())
-      .then((data) => setOpportunities(data))
+      .then((res) => {
+        if (!res.ok) {
+          throw new Error('Network response was not ok');
+        }
+        return res.json();
+      })
+      .then((data) => {
+        setOpportunities(data);
+        setError(null);
+      })
       .catch(err => {
         console.error("Failed to fetch opportunities:", err);
-        setError("Could not load data. Please try refreshing the page.");
+        setError("Could not load data. Please ensure the backend server is running.");
+      })
+      .finally(() => {
+        setLoading(false); // Set loading to false once fetch is complete
       });
-  }, []); 
+  }, []); // Empty dependency array ensures this runs only once
 
- 
   const handleDelete = (id: number) => {
     if (!window.confirm("Are you sure you want to delete this opportunity?")) {
       return;
@@ -34,18 +49,25 @@ function App() {
       if (res.ok) {
         setOpportunities(prev => prev.filter(opp => opp.id !== id));
       } else {
-        throw new Error('Failed to delete');
+        throw new Error('Failed to delete on the server.');
       }
     })
     .catch(err => {
       console.error(err);
-      setError("Failed to delete opportunity.");
+      setError("Failed to delete opportunity. Please try again.");
     });
   };
 
+  // Show a loading message while data is being fetched
+  if (loading) {
+    return <div>Loading opportunities...</div>;
+  }
+
   return (
-    <div>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+    <div style={{ padding: '20px' }}>
+      {/* Display a global error message if something went wrong */}
+      {error && <p style={{ color: 'red', border: '1px solid red', padding: '10px' }}>Error: {error}</p>}
+      
       <Routes>
         <Route 
           path="/" 
