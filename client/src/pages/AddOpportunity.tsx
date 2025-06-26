@@ -1,7 +1,5 @@
-// client/src/pages/AddOpportunity.tsx - NEW FILE
-
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 function AddOpportunity() {
   const navigate = useNavigate();
@@ -23,6 +21,7 @@ function AddOpportunity() {
     e.preventDefault(); // Prevent default browser submission
     setError(null);
 
+    // This is the fetch request to the backend
     fetch('http://localhost:3000/opportunities', {
       method: 'POST',
       headers: {
@@ -32,7 +31,7 @@ function AddOpportunity() {
     })
       .then(res => {
         if (!res.ok) {
-          // If server responds with an error, capture it
+          // If the server responds with an error, capture it to display
           return res.json().then(err => Promise.reject(err));
         }
         return res.json();
@@ -43,6 +42,7 @@ function AddOpportunity() {
       })
       .catch(err => {
         console.error('Failed to create opportunity:', err);
+        // Set the error message to be displayed to the user
         setError(err.error || 'Failed to submit. Please check your inputs.');
       });
   };
@@ -50,32 +50,43 @@ function AddOpportunity() {
   return (
     <div>
       <h1>Add New Volunteer Opportunity</h1>
+      <hr />
       <form onSubmit={handleSubmit}>
-        {/* Render error message if one exists */}
-        {error && <p style={{ color: 'red' }}>{error}</p>}
+        {/* Render error message with proper styling if one exists */}
+        {error && <p className="error-message">{error}</p>}
         
-        <div>
+        {/* Each form field is wrapped in a div with 'form-group' for spacing */}
+        <div className="form-group">
           <label htmlFor="title">Title</label>
           <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required />
         </div>
-        <div>
+        
+        <div className="form-group">
           <label htmlFor="description">Description</label>
           <textarea id="description" name="description" value={formData.description} onChange={handleChange} required />
         </div>
-        <div>
+        
+        <div className="form-group">
           <label htmlFor="date">Date</label>
           <input type="date" id="date" name="date" value={formData.date} onChange={handleChange} required />
         </div>
-        <div>
+        
+        <div className="form-group">
           <label htmlFor="location">Location</label>
           <input type="text" id="location" name="location" value={formData.location} onChange={handleChange} required />
         </div>
-        <div>
+        
+        <div className="form-group">
           <label htmlFor="category">Category</label>
-          <input type="text" id="category" name="category" value={formData.category} onChange={handleChange} />
+          <input type="text" id="category" name="category" value={formData.category} onChange={handleChange} placeholder="e.g., Environment, Education" />
         </div>
-        <button type="submit">Submit Opportunity</button>
+        
+        {/* The submit button uses 'btn' and 'btn-primary' classes for styling */}
+        <button type="submit" className="btn btn-primary">Submit Opportunity</button>
       </form>
+      
+      <br />
+      <Link to="/">← Cancel and go back</Link>
     </div>
   );
 }

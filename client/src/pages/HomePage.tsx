@@ -19,46 +19,32 @@ function HomePage({ opportunities, search, setSearch, onDelete }: HomePageProps)
     opp.description.toLowerCase().includes(search.toLowerCase())
   );
 
-  return (
+   return (
     <div>
       <h1>Volunteer Opportunities</h1>
-      
-      {/* Task 19: Add a link to navigate to the Add Opportunity page */}
-      <Link to="/add">Add New Opportunity</Link>
-      
-      <hr />
-
+      <Link to="/add" className="btn btn-primary"> {/* Add classes */}
+        Add New Opportunity
+      </Link>
+      <hr style={{ margin: '1.5rem 0' }} />
       <input
+        className="search-input" // Add class
         type="text"
         placeholder="Search..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        style={{ margin: '20px 0', padding: '10px', width: '300px' }}
+        // ... other props
       />
-      
       <ul>
         {filtered.map((opp) => (
-          <li key={opp.id} style={{ marginBottom: '10px' }}>
-            
-            {/* Task 18: Each opportunity title is a link to its details page */}
+          <li key={opp.id} className="opportunity-list-item"> {/* Add class */}
             <Link to={`/opportunities/${opp.id}`}>
               <strong>{opp.title}</strong> – {opp.location} ({opp.date})
             </Link>
-
-            {/* Task 21: Add a delete button for each opportunity */}
-            <button 
-              onClick={() => onDelete(opp.id)} 
-              style={{ marginLeft: '10px', cursor: 'pointer' }}
-            >
+            <button onClick={() => onDelete(opp.id)} className="btn btn-danger"> {/* Add classes */}
               Delete
             </button>
           </li>
         ))}
-        {filtered.length === 0 && <p>No opportunities found.</p>}
       </ul>
-      
-      {/* A simple message if the filter results in no items */}
-      {filtered.length === 0 && <p>No opportunities match your search.</p>}
+      {/* ... no results message */}
     </div>
   );
 }

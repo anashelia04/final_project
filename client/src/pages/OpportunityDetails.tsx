@@ -32,17 +32,19 @@ function OpportunityDetails() {
   }, [id]); // Re-run effect if the ID in the URL changes
 
   if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  iif (error) return <div className="error-message">Error: {error}</div>;
   if (!opportunity) return <div>Opportunity details not available.</div>;
 
-  return (
+   return (
     <div>
-      <h1>{opportunity.title}</h1>
-      <p><strong>Category:</strong> {opportunity.category}</p>
-      <p><strong>Location:</strong> {opportunity.location}</p>
-      <p><strong>Date:</strong> {new Date(opportunity.date).toLocaleDateString()}</p>
-      <hr />
-      <p>{opportunity.description}</p>
+      <div className="details-card"> {/* Add wrapper */}
+        <h1>{opportunity.title}</h1>
+        <p><strong>Category:</strong> {opportunity.category}</p>
+        <p><strong>Location:</strong> {opportunity.location}</p>
+        <p><strong>Date:</strong> {new Date(opportunity.date).toLocaleDateString()}</p>
+        <hr style={{ margin: '1rem 0' }}/>
+        <p>{opportunity.description}</p>
+      </div>
       <br />
       <Link to="/">← Back to List</Link>
     </div>

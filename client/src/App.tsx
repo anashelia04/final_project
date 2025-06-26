@@ -62,10 +62,8 @@ function App() {
   }
 
   return (
-    <div style={{ padding: '20px' }}>
-      {/* Display a global error message if something went wrong */}
-      {error && <p style={{ color: 'red', border: '1px solid red', padding: '10px' }}>Error: {error}</p>}
-      
+    <div className="container"> {/* Add this class */}
+      {error && <p className="error-message">{error}</p>}
       <Routes>
         <Route 
           path="/" 
