@@ -1,5 +1,3 @@
-// client/src/App.tsx
-
 import { useState, useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
 import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
