@@ -45,24 +45,25 @@ function App() {
       if (res.ok) {
         setOpportunities(prev => prev.filter(opp => opp.id !== id));
       } else {
-        throw new Error('Failed to delete');
+  
+        res.json().then(err => {
+            setError(err.error || "Failed to delete opportunity.");
+        }).catch(() => {
+            setError("Failed to delete opportunity.");
+        });
       }
     })
     .catch(err => {
       console.error(err);
-      setError("Failed to delete opportunity.");
+      setError("An unexpected error occurred while trying to delete.");
     });
   };
 
-  if (loading) {
-    return <div>Loading opportunities...</div>;
-  }
-
   return (
-    <> {}
-      <Header /> { /* Header to all pages */}
+    <>
+      <Header />
       <main className="container">
-        {error && <p className="error-message">{error}</p>}
+        {error && <p className="error-message" onClick={() => setError(null)}>✖ {error}</p>}
         <Routes>
           <Route 
             path="/" 
@@ -73,7 +74,7 @@ function App() {
                 category={category}
                 setCategory={setCategory}
                 opportunities={opportunities}
-                loading={loading}
+                loading={loading} 
                 onDelete={handleDelete}
               />
             } 

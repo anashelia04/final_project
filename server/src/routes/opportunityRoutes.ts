@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import * as OpportunityService from '../services/opportunityService';
 
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
  * @param {string} [req.query.search] - Optional: Search by keyword in title or description.
  * @returns {Array<VolunteerOpportunity>} A list of opportunities.
  */
-router.get("/", (req, res) => {
+router.get("/", (req: Request, res: Response) => {
   const { category, search } = req.query;
   const filteredOpportunities = OpportunityService.getAllOpportunities({
     category: category as string,
@@ -26,10 +26,11 @@ router.get("/", (req, res) => {
  * @returns {VolunteerOpportunity} The opportunity object if found.
  * @returns {404} If the opportunity is not found.
  */
-router.get("/:id", (req, res) => {
+router.get("/:id", (req: Request, res: Response) => {
   const id = parseInt(req.params.id, 10);
   if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid ID format. ID must be a number." });
+    res.status(400).json({ error: "Invalid ID format. ID must be a number." });
+    return;
   }
   const opportunity = OpportunityService.getOpportunityById(id);
   if (opportunity) res.json(opportunity);
@@ -44,10 +45,11 @@ router.get("/:id", (req, res) => {
  * @returns {VolunteerOpportunity} The newly created opportunity, including its new ID.
  * @returns {400} If required fields are missing.
  */
-router.post("/", (req, res) => {
+router.post("/", (req: Request, res: Response) => {
   const { title, description, date, location, category } = req.body;
   if (!title || !title.trim() || !description || !description.trim() || !date || !location || !location.trim()) {
-    return res.status(400).json({ error: "Missing or empty required fields. Required: title, description, date, location." });
+    res.status(400).json({ error: "Missing or empty required fields. Required: title, description, date, location." });
+    return;
   }
 
   const newOpportunity = OpportunityService.createOpportunity({ title, description, date, location, category: category || "General" });
@@ -63,14 +65,16 @@ router.post("/", (req, res) => {
  * @returns {404} If the opportunity is not found.
  * @returns {400} If the request body is empty.
  */
-router.put("/:id", (req, res) => {
+router.put("/:id", (req: Request, res: Response) => {
   const id = parseInt(req.params.id, 10);
   if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid ID format. ID must be a number." });
+    res.status(400).json({ error: "Invalid ID format. ID must be a number." });
+    return;
   }
 
   if (Object.keys(req.body).length === 0) {
-    return res.status(400).json({ error: "Request body cannot be empty." });
+    res.status(400).json({ error: "Request body cannot be empty." });
+    return;
   }
   const updatedOpportunity = OpportunityService.updateOpportunity(id, req.body);
   if (updatedOpportunity) res.json(updatedOpportunity);
@@ -84,10 +88,11 @@ router.put("/:id", (req, res) => {
  * @returns {204} No Content on successful deletion.
  * @returns {404} If the opportunity is not found.
  */
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req: Request, res: Response) => {
   const id = parseInt(req.params.id, 10);
   if (isNaN(id)) {
-    return res.status(400).json({ error: "Invalid ID format. ID must be a number." });
+    res.status(400).json({ error: "Invalid ID format. ID must be a number." });
+    return;
   }
   
   const success = OpportunityService.deleteOpportunity(id);

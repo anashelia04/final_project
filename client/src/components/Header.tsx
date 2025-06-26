@@ -1,6 +1,6 @@
 import { Link, NavLink } from 'react-router-dom';
-import './Header.css'; // We'll create this for styling
-
+import './Header.css';
+ 
 function Header() {
   return (
     <header className="app-header">
