@@ -8,7 +8,7 @@ interface OpportunityCardProps {
 
 function OpportunityCard({ opportunity, onDelete }: OpportunityCardProps) {
   return (
-    <li className="opportunity-item">
+    <li className="opportunity-list-item">
       <Link to={`/opportunities/${opportunity.id}`}>
         <strong>{opportunity.title}</strong> – {opportunity.location} ({opportunity.date})
       </Link>
