@@ -4,9 +4,15 @@ import * as OpportunityService from '../services/opportunityService';
 const router = express.Router();
 
 // GET all opportunities
-router.get("/", (_req, res) => {
-  const opportunities = OpportunityService.getAllOpportunities();
-  res.json(opportunities);
+router.get("/", (req, res) => {
+  const { category, search } = req.query;
+
+  const filteredOpportunities = OpportunityService.getAllOpportunities({
+    category: category as string, 
+    search: search as string,   
+  });
+  
+  res.json(filteredOpportunities);
 });
 
 // GET a single opportunity by ID

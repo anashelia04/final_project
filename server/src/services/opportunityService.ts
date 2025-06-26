@@ -3,8 +3,29 @@ import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
 
 let opportunities: VolunteerOpportunity[] = [...initialData];
 
-export const getAllOpportunities = (): VolunteerOpportunity[] => {
-  return opportunities;
+interface OpportunityFilters {
+  category?: string;
+  search?: string;
+}
+
+export const getAllOpportunities = (filters: OpportunityFilters = {}): VolunteerOpportunity[] => {
+  let filteredOpportunities = [...opportunities]; 
+
+  if (filters.category) {
+    filteredOpportunities = filteredOpportunities.filter(
+      opp => opp.category.toLowerCase() === filters.category?.toLowerCase()
+    );
+  }
+
+  if (filters.search) {
+    const searchTerm = filters.search.toLowerCase();
+    filteredOpportunities = filteredOpportunities.filter(
+      opp => opp.title.toLowerCase().includes(searchTerm) || 
+             opp.description.toLowerCase().includes(searchTerm)
+    );
+  }
+
+  return filteredOpportunities;
 };
 
 export const getOpportunityById = (id: number): VolunteerOpportunity | undefined => {

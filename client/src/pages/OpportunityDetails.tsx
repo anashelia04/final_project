@@ -32,7 +32,7 @@ function OpportunityDetails() {
   }, [id]); // Re-run effect if the ID in the URL changes
 
   if (loading) return <div>Loading...</div>;
-  iif (error) return <div className="error-message">Error: {error}</div>;
+  if (error) return <div className="error-message">Error: {error}</div>;
   if (!opportunity) return <div>Opportunity details not available.</div>;
 
    return (
