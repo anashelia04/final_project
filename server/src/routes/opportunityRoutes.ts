@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import * as OpportunityService from '../services/opportunityService';
+import { requireAuth } from '../middleware/authMiddleware';
 
 const router = express.Router();
 
@@ -99,6 +100,14 @@ router.delete("/:id", (req: Request, res: Response) => {
   if (success) res.status(204).send();
   else res.status(404).json({ error: "Opportunity not found" });
 });
-  
+
+router.post('/', requireAuth, (req, res) => {
+  const newOpportunityData = req.body;
+
+  const author = req.cookies.user;
+  const newOpportunity = opportunityService.addOpportunity({ ...newOpportunityData, author });
+  res.status(201).json(newOpportunity);
+});
+
 
 export default router;
