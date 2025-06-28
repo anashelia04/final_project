@@ -1,5 +1,5 @@
 import { opportunities as initialData } from '../data';
-import { VolunteerOpportunity } from '../../shared/types/VolunteerOpportunity';
+import { VolunteerOpportunity } from '../../../shared/types/VolunteerOpportunity';
 
 let opportunities: VolunteerOpportunity[] = [...initialData];
 
@@ -15,16 +15,19 @@ export const getOpportunityById = (id: number): VolunteerOpportunity | undefined
 
 export const createOpportunity = (data: CreateOpportunityData, authorUsername: string): VolunteerOpportunity => {
   const newOpportunity: VolunteerOpportunity = {
-    id: Date.now(), 
+    id: Date.now(), // or you can use an incrementing counter
     ...data,
-    author: authorUsername, 
-    volunteers: [], 
+    author: authorUsername,
+    volunteers: [],
   };
   opportunities.push(newOpportunity);
   return newOpportunity;
 };
 
-export const joinOpportunity = (opportunityId: number, username: string): { success: boolean, message: string, data?: VolunteerOpportunity } => {
+export const joinOpportunity = (
+  opportunityId: number,
+  username: string
+): { success: boolean; message: string; data?: VolunteerOpportunity } => {
   const opportunity = getOpportunityById(opportunityId);
 
   if (!opportunity) {
@@ -34,7 +37,7 @@ export const joinOpportunity = (opportunityId: number, username: string): { succ
   if (opportunity.volunteers.includes(username)) {
     return { success: false, message: "You have already joined this opportunity." };
   }
-  
+
   if (opportunity.volunteers.length >= opportunity.volunteerLimit) {
     return { success: false, message: "This opportunity is full." };
   }
@@ -43,8 +46,10 @@ export const joinOpportunity = (opportunityId: number, username: string): { succ
   return { success: true, message: "Successfully joined!", data: opportunity };
 };
 
-
-export const updateOpportunity = (id: number, data: Partial<VolunteerOpportunity>): VolunteerOpportunity | null => {
+export const updateOpportunity = (
+  id: number,
+  data: Partial<VolunteerOpportunity>
+): VolunteerOpportunity | null => {
   const index = opportunities.findIndex(opp => opp.id === id);
   if (index === -1) {
     return null;
