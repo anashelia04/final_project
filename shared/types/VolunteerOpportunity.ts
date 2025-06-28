@@ -9,3 +9,4 @@ export interface VolunteerOpportunity {
   volunteers: string[]; 
   volunteerLimit: number; 
 }
+

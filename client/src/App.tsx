@@ -1,19 +1,25 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
+import axios from "axios";
 import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
 import './App.css';
 
+// Components and Pages
 import Header from "./components/Header";
 import HomePage from "./pages/HomePage";
 import OpportunityDetails from "./pages/OpportunityDetails";
 import AddOpportunity from "./pages/AddOpportunity";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { useAuth } from "./context/AuthContext";
 
 function App() {
   const [opportunities, setOpportunities] = useState<VolunteerOpportunity[]>([]);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("");
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
 
   useEffect(() => {
     setLoading(true);
@@ -23,40 +29,24 @@ function App() {
     if (search) params.append('search', search);
     if (category) params.append('category', category);
     
-    const queryString = params.toString();
-    const url = `http://localhost:3000/opportunities?${queryString}`;
+    const url = `/api/opportunities?${params.toString()}`;
 
-    fetch(url)
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch data from the server.");
-        return res.json();
-      })
-      .then((data) => setOpportunities(data))
-      .catch(err => setError(err.message))
+    axios.get(url)
+      .then(res => setOpportunities(res.data))
+      .catch(err => setError(err.message || "Failed to fetch data."))
       .finally(() => setLoading(false));
       
   }, [search, category]);
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (!window.confirm("Are you sure you want to delete this opportunity?")) return;
 
-    fetch(`http://localhost:3000/opportunities/${id}`, { method: 'DELETE' })
-    .then(res => {
-      if (res.ok) {
-        setOpportunities(prev => prev.filter(opp => opp.id !== id));
-      } else {
-  
-        res.json().then(err => {
-            setError(err.error || "Failed to delete opportunity.");
-        }).catch(() => {
-            setError("Failed to delete opportunity.");
-        });
-      }
-    })
-    .catch(err => {
-      console.error(err);
-      setError("An unexpected error occurred while trying to delete.");
-    });
+    try {
+      await axios.delete(`/api/opportunities/${id}`);
+      setOpportunities(prev => prev.filter(opp => opp.id !== id));
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Failed to delete opportunity.");
+    }
   };
 
   return (
@@ -79,8 +69,16 @@ function App() {
               />
             } 
           />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/opportunities/:id" element={<OpportunityDetails />} />
-          <Route path="/add" element={<AddOpportunity />} />
+          <Route 
+            path="/add-opportunity" 
+            element={
+              <ProtectedRoute>
+                <AddOpportunity />
+              </ProtectedRoute>
+            } 
+          />
         </Routes>
       </main>
     </>

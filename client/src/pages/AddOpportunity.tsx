@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 
 function AddOpportunity() {
   const navigate = useNavigate();
@@ -8,43 +9,35 @@ function AddOpportunity() {
     description: '',
     date: '',
     location: '',
-    category: '',
+    category: 'General',
+    volunteerLimit: 1, // New field with default value
   });
   const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'volunteerLimit' ? parseInt(value, 10) : value,
+    }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent default browser submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError(null);
 
-    // This is the fetch request to the backend
-    fetch('http://localhost:3000/opportunities', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(formData),
-    })
-      .then(res => {
-        if (!res.ok) {
-          // If the server responds with an error, capture it to display
-          return res.json().then(err => Promise.reject(err));
-        }
-        return res.json();
-      })
-      .then(() => {
-        // On success, navigate back to the homepage
-        navigate('/');
-      })
-      .catch(err => {
-        console.error('Failed to create opportunity:', err);
-        // Set the error message to be displayed to the user
-        setError(err.error || 'Failed to submit. Please check your inputs.');
-      });
+    if (formData.volunteerLimit < 1) {
+      setError('Volunteer limit must be at least 1.');
+      return;
+    }
+
+    try {
+      await axios.post('/api/opportunities', formData);
+      navigate('/');
+    } catch (err: any) {
+      console.error('Failed to create opportunity:', err);
+      setError(err.response?.data?.error || 'Failed to submit. Please check your inputs.');
+    }
   };
 
   return (
@@ -52,10 +45,8 @@ function AddOpportunity() {
       <h1>Add New Volunteer Opportunity</h1>
       <hr />
       <form onSubmit={handleSubmit}>
-        {/* Render error message with proper styling if one exists */}
         {error && <p className="error-message">{error}</p>}
         
-        {/* Each form field is wrapped in a div with 'form-group' for spacing */}
         <div className="form-group">
           <label htmlFor="title">Title</label>
           <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required />
@@ -78,10 +69,21 @@ function AddOpportunity() {
         
         <div className="form-group">
           <label htmlFor="category">Category</label>
-          <input type="text" id="category" name="category" value={formData.category} onChange={handleChange} placeholder="e.g., Environment, Education" />
+          <select id="category" name="category" value={formData.category} onChange={handleChange}>
+            <option value="General">General</option>
+            <option value="Environment">Environment</option>
+            <option value="Education">Education</option>
+            <option value="Health">Health</option>
+            <option value="Community">Community</option>
+          </select>
         </div>
         
-        {/* The submit button uses 'btn' and 'btn-primary' classes for styling */}
+        {/* New Field for Volunteer Limit */}
+        <div className="form-group">
+          <label htmlFor="volunteerLimit">Volunteer Limit</label>
+          <input type="number" id="volunteerLimit" name="volunteerLimit" value={formData.volunteerLimit} onChange={handleChange} min="1" required />
+        </div>
+        
         <button type="submit" className="btn btn-primary">Submit Opportunity</button>
       </form>
       
