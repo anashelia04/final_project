@@ -1,4 +1,4 @@
-import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
+import { VolunteerOpportunity } from '../../shared/types/VolunteerOpportunity';
 
 export const opportunities: VolunteerOpportunity[] = [
   {
@@ -7,7 +7,10 @@ export const opportunities: VolunteerOpportunity[] = [
     description: "Help clean the local beach.",
     date: "2025-06-10",
     location: "San Diego, CA",
-    category: "Environment"
+    category: "Environment",
+    author: 'organizer_alice',
+    volunteers: ['volunteer_bob'], 
+    volunteerLimit: 20 
   },
   {
     id: 2,
@@ -15,7 +18,9 @@ export const opportunities: VolunteerOpportunity[] = [
     description: "Provide homework help to kids in need.",
     date: "2025-06-15",
     location: "Atlanta, GA",
-    category: "Education"
+    category: "Education",
+    author: 'organizer_alice', 
+    volunteers: [], 
+    volunteerLimit: 5 
   }
 ];
-//author fieldi dasamatebelia 

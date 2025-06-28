@@ -5,8 +5,7 @@ export interface VolunteerOpportunity {
   date: string;
   location: string;
   category: string;
-  username: string;
-  password?: string;
   author: string; 
-  volunteers: string[];
+  volunteers: string[]; 
+  volunteerLimit: number; 
 }
