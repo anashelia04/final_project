@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Routes, Route } from 'react-router-dom';
 import axios from "axios";
 import { VolunteerOpportunity } from '@shared/types/VolunteerOpportunity';
+import DashboardPage from './pages/DashboardPage';
 import './App.css';
 
 // Components and Pages
@@ -71,6 +72,14 @@ function App() {
           />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/opportunities/:id" element={<OpportunityDetails />} />
+          <Route 
+                path="/dashboard"
+                element={
+               <ProtectedRoute>
+            <DashboardPage />
+        </ProtectedRoute>
+    }
+/>
           <Route 
             path="/add-opportunity" 
             element={

@@ -22,18 +22,32 @@ function Header() {
           VolunteerHub
         </Link>
         <nav>
-          <NavLink to="/" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
+          {/* This link is always visible */}
+          <NavLink 
+            to="/" 
+            className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+          >
             Home
           </NavLink>
+          
           {user ? (
             <>
-              <span className="nav-link">Welcome, {user.username}</span>
+              {/* The new "My Dashboard" link */}
+              <NavLink 
+                to="/dashboard" 
+                className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+              >
+                My Dashboard
+              </NavLink>
+
               <NavLink to="/add-opportunity" className="btn btn-primary">
                 + Add Opportunity
               </NavLink>
+              
               <button onClick={handleLogout} className="btn">Logout</button>
             </>
           ) : (
+            // --- Logged-out User View ---
             <NavLink to="/login" className="btn btn-primary">
               Login
             </NavLink>
